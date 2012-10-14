@@ -68,23 +68,23 @@ describe Browserstack::Client do
     end
   end
 
-  descirbe "create_worker" do
+  describe "create_worker" do
 
   end
 
-  descirbe "terminate_worker" do
+  describe "terminate_worker" do
 
   end
 
-  descirbe "get_worker_status" do
+  describe "get_worker_status" do
 
   end
 
-  descirbe "get_workers" do
+  describe "get_workers" do
 
   end
 
-  descirbe "get_supported_os_list" do
+  describe "get_supported_os_list" do
 
   end
 end
