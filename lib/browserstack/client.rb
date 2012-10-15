@@ -83,16 +83,20 @@ module Browserstack
       when 200
         res
       when 401
-        raise "Unauthorized User".inspect
+        raise "Unauthorized User"
       when 422
-        raise_validation_error
+        raise_validation_error(res)
       else
-        raise res.body.inspect
+        raise res.body
       end
     end
 
-    def raise_validation_error
-      raise res.body.inspect
+    def raise_validation_error(res)
+      parser = Yajl::Parser.new(:symbolize_keys => true)
+      data = parser.parse(res.body)
+      message = "#{data[:message]}\n"
+      data[:errors].each { |error| message << "#{error[:field].to_s.capitalize} : #{error[:code]}\n" }
+      raise message
     end
 
     def update_cache?
