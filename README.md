@@ -42,7 +42,7 @@ client = Browserstack::Client.new(settings)
 Fetches all available browsers.
 
 ``` ruby
-client.get_browsers #will return a hash
+client.get_browsers #returns a hash
 ```
 
 or for a specific OS
@@ -61,7 +61,7 @@ client.get_supported_os_list
 A worker is simply a new browser instance.
 
 ``` ruby
-enc_url = URI.escape("http://example.com/?a=\111\\115"")
+enc_url = URI.escape("http://example.com/?a=\111\\115")
 settings = {os: "win", browser: "ie7", version: "4.0", url: enc_url}
 worker_id = client.create_worker(settings)
 ```
@@ -89,7 +89,7 @@ status = client.worker_status(worker_id)
 ```
 
 * `status`: A string representing the current status of the worker.
-  * Possible statuses: `"running"`, `"queue"`, "terminated".
+  * Possible statuses: `"running"`, `"queue"`, `"terminated"`.
 
 ####Getting all workers of a client
 
