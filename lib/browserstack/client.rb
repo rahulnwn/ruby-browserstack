@@ -55,7 +55,7 @@ module Browserstack
       parser.parse(res.body)
     end
 
-    def get_workers(worker_id)
+    def get_workers
       connection = create_new_connection
       call = Net::HTTP::Get.new("/#{self.version}/workers")
       add_authentication(call)
