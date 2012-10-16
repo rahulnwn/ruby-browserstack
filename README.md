@@ -85,11 +85,11 @@ data = client.terminate_worker(worker_id)
 Determines whether the worker is in queue, running or terminated.
 
 ``` ruby
-status = client.worker_status(worker_id)
+worker = client.worker_status(worker_id)
 ```
 
-* `status`: A string representing the current status of the worker.
-  * Possible statuses: `"running"`, `"queue"`, `"terminated"`.
+* `worker`: A hash representing the current status of the worker and worker properties.
+  * returns an empty hash if worker is terminated.
 
 ####Getting all workers of a client
 
