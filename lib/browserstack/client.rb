@@ -16,52 +16,34 @@ module Browserstack
 
     def get_browsers(os = nil)
       if update_cache?
-        connection = create_new_connection
         call = Net::HTTP::Get.new("/#{self.version}/browsers")
-        add_authentication(call)
-        res = make_request(connection, call)
+        @browsers = parse make_request(call)
         @latest_update = Time.now
-        parser = Yajl::Parser.new(:symbolize_keys => true)
-        @browsers = parser.parse(res.body)
       end
       return_with_os(os)
     end
 
     def create_worker(settings)
       settings ||= {}
-      connection = create_new_connection
       call = Net::HTTP::Post.new("/#{self.version}/worker")
       call.set_form_data(settings)
-      add_authentication(call)
-      res = make_request(connection, call)
-      Yajl::Parser.parse(res.body)['id']
+      data = parse make_request(call)
+      data[:id]
     end
 
     def terminate_worker(worker_id)
-      connection = create_new_connection
       call = Net::HTTP::Delete.new("/#{self.version}/worker/#{worker_id}")
-      add_authentication(call)
-      res = make_request(connection, call)
-      parser = Yajl::Parser.new(:symbolize_keys => true)
-      parser.parse(res.body)
+      parse make_request(call)
     end
 
     def get_worker_status(worker_id)
-      connection = create_new_connection
       call = Net::HTTP::Get.new("/#{self.version}/worker/#{worker_id}")
-      add_authentication(call)
-      res = make_request(connection, call)
-      parser = Yajl::Parser.new(:symbolize_keys => true)
-      parser.parse(res.body)
+      parse make_request(call)
     end
 
     def get_workers
-      connection = create_new_connection
       call = Net::HTTP::Get.new("/#{self.version}/workers")
-      add_authentication(call)
-      res = make_request(connection, call)
-      parser = Yajl::Parser.new(:symbolize_keys => true)
-      parser.parse(res.body)
+      parse make_request(call)
     end
 
     def get_supported_os_list
@@ -73,18 +55,25 @@ module Browserstack
       Net::HTTP.new(HOSTNAME, 80)
     end
 
+    def parse(response)
+      parser = Yajl::Parser.new(:symbolize_keys => true)
+      parser.parse(response.body)
+    end
+
     def add_authentication(call)
       call["Authorization"] = @authentication
     end
     
-    def make_request(connection, call)
+    def make_request(call)
+      connection = create_new_connection
+      add_authentication(call)
       res = connection.request(call)
       case res.code.to_i
       when 200
         res
       when 401
         raise "Unauthorized User"
-      when 422
+      when 422, 403
         raise_validation_error(res)
       else
         raise res.body
@@ -95,7 +84,7 @@ module Browserstack
       parser = Yajl::Parser.new(:symbolize_keys => true)
       data = parser.parse(res.body)
       message = "#{data[:message]}\n"
-      data[:errors].each { |error| message << "#{error[:field].to_s.capitalize} : #{error[:code]}\n" }
+      data[:errors].each { |error| message << "#{error[:field]} : #{error[:code]}\n" }
       raise message
     end
 
