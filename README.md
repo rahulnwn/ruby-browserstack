@@ -62,7 +62,7 @@ A worker is simply a new browser instance.
 
 ``` ruby
 enc_url = URI.escape("http://example.com/?a=\111\\115")
-settings = {os: "win", browser: "ie7", version: "4.0", url: enc_url}
+settings = {os: "win", browser: "ie", version: "7.0", url: enc_url}
 worker_id = client.create_worker(settings)
 ```
 A worker id is returned after worker gets created.
