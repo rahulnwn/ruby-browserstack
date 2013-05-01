@@ -16,7 +16,7 @@ module Browserstack
       @authentication = "Basic " + Base64.encode64("#{params[:username]}:#{params[:password]}").strip
 
       validate_version(version) if version = params[:api_version] || params[:version]
-      @version = version || 3
+      @version = version || 2
     end
 
     def get_browsers(os = nil)
