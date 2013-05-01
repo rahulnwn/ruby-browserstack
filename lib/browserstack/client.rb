@@ -1,17 +1,22 @@
 module Browserstack
   HOSTNAME = "api.browserstack.com"
   class Client
-    attr_reader :browsers, :version
+    attr_reader :browsers
+    attr_accessor :version, :home
+    alias_method :api_version, :version
+    alias_method "api_version=", "version="
 
     def initialize(params)
       params ||= {}
 
+      #File.read(`$HOME/browserstack.yml`)
       raise ArgumentError, "Username is required" unless params[:username]
       raise ArgumentError, "Password is required" unless params[:password]
 
       @authentication = "Basic " + Base64.encode64("#{params[:username]}:#{params[:password]}").strip
 
-      @version = 2
+      validate_version(version) if version = params[:api_version] || params[:version]
+      @version = version || 3
     end
 
     def get_browsers(os = nil)
@@ -94,6 +99,10 @@ module Browserstack
 
     def return_with_os(os)
       os ? @browsers[os.to_sym] : @browsers
+    end
+
+    def validate_version(version)
+      raise "Invalid Version" unless ["1", "2", "3"].include?(version.to_s)
     end
   end
 end
