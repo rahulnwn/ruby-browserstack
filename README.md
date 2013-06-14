@@ -32,8 +32,7 @@ Creates a new client instance.
   * `password`: The password for the BrowserStack account.
 
 ``` ruby
-settings = {username: "foo", password: "foobar"}
-client = Browserstack::Client.new(settings)
+client = Browserstack::Client.new(username: "foo", password: "foobar")
 ```
 
 ###API
@@ -85,7 +84,7 @@ data = client.terminate_worker(worker_id)
 Determines whether the worker is in queue, running or terminated.
 
 ``` ruby
-worker = client.worker_status(worker_id)
+worker = client.get_worker_status(worker_id)
 ```
 
 * `worker`: A hash representing the current status of the worker and worker properties.
